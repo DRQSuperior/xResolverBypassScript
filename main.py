@@ -1,10 +1,10 @@
 import random
-import requests
+import urllib.parse
+import urllib.request
+import socket
 
 with open('proxies.txt', 'r') as file:
     proxies = [line.strip() for line in file.readlines()]
-
-proxy = random.choice(proxies)
 
 gamertag = input("Enter the gamertag: ")
 
@@ -17,9 +17,24 @@ headers = {
 }
 
 data = {
-    'xboxUsername': gamertag.replace(' ', '+') 
+    'xboxUsername': gamertag.replace(' ', '+')
 }
 
-response = requests.post('https://xresolver.com/ajax/tool.php', headers=headers, data=data, proxies={'http': proxy, 'https': proxy})
+encoded_data = urllib.parse.urlencode(data).encode('utf-8')
 
-print(response.text)
+while proxies:
+    proxy = random.choice(proxies)
+
+    proxy_handler = urllib.request.ProxyHandler({'http': proxy, 'https': proxy})
+    opener = urllib.request.build_opener(proxy_handler)
+    request = urllib.request.Request('https://xresolver.com/ajax/tool.php', data=encoded_data, headers=headers)
+
+    try:
+        response = opener.open(request, timeout=5)
+        print(response.read().decode('utf-8'))
+        break
+    except (urllib.error.URLError, socket.timeout):
+        print(f'Request timed out with proxy: {proxy}. Retrying with a new proxy...')
+        proxies.remove(proxy)
+else:
+    print('No more proxies to try. Request failed.')
