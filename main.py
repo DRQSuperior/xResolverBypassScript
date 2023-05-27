@@ -3,6 +3,7 @@ import urllib.parse
 import urllib.request
 import socket
 from bs4 import BeautifulSoup
+from colorama import Fore, Style
 
 with open('proxies.txt', 'r') as file:
     proxies = [line.strip() for line in file.readlines()]
@@ -35,7 +36,7 @@ while proxies:
         soup = BeautifulSoup(response.read(), 'html.parser')
 
         if 'You can only resolve 1 user every 30 minutes.' in soup.text:
-            print(f'Proxy {proxy} is on cooldown. Retrying with a new proxy...')
+            print(Fore.YELLOW + f'Proxy {proxy} is on cooldown. Retrying with a new proxy...' + Style.RESET_ALL)
             proxies.remove(proxy)
             continue
 
@@ -56,10 +57,13 @@ while proxies:
                 'Connection Type': soup.find(string='Connection Type').find_next('td').get_text(strip=True),
                 'Currency': soup.find(string='Currency').find_next('td').get_text(strip=True)
             }
-            print(info)
+            print(Fore.GREEN + 'Information retrieved successfully:')
+            for key, value in info.items():
+                print(f'{key}: {value}')
+            print(Style.RESET_ALL)
             break
         except AttributeError:
-            print('No information found for this gamertag.')
+            print(Fore.RED + 'No information found for this gamertag.' + Style.RESET_ALL)
             break
     except (urllib.error.URLError, socket.timeout):
-        print(f'Request timed out with proxy: {proxy}. Retrying')
+        print(Fore.RED + f'Request timed out with proxy: {proxy}. Retrying' + Style.RESET_ALL)
