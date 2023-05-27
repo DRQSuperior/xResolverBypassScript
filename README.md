@@ -21,4 +21,4 @@ The script automates the process of sending POST requests to xresolver.com witho
 📝 Disclaimer:
 This script is provided for educational and informational purposes only. Use it responsibly and at your own risk. The developers are not responsible for any misuse or unauthorized activities.
 
-🔒🔥 Happy bypassing! Enjoy your uninterrupted experience on xresolver.com! 🚀🌟
+🔒🔥 Made by @DRQSuperior#0001 🚀🌟
